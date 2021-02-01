@@ -39,7 +39,7 @@ namespace ProjectManagementAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectModel>> GetProject(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Projects.Include(p => p.Tasks).SingleOrDefaultAsync(p => p.Id == id);
 
             if (project == null) return NotFound();
 
@@ -51,11 +51,11 @@ namespace ProjectManagementAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(int id, EditProjectModel model)
         {
-            var project = _mapper.Map<Project>(model);
-            
-            if (id != project.Id) return BadRequest();
+            var dbProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == id);
+            if (dbProject == null) return BadRequest();
 
-            _context.Entry(project).State = EntityState.Modified;
+            _mapper.Map(model, dbProject);
+
             try
             {
                 await _context.SaveChangesAsync();

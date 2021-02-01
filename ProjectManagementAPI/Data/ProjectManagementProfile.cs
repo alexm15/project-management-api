@@ -11,7 +11,12 @@ namespace ProjectManagementAPI.Data
         {
             CreateMap<Project, ProjectModel>();
             CreateMap<ProjectTask, TaskModel>();
+
+            CreateMap<CreateTaskModel, ProjectTask>();
             CreateMap<CreateProjectModel, Project>();
+
+            CreateMap<EditProjectModel, Project>();
+            CreateMap<EditTaskModel, ProjectTask>();
         }
     }
 }
